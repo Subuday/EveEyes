@@ -1,4 +1,5 @@
 import math
+from time import sleep
 import tkinter as tk
 
 
@@ -15,6 +16,9 @@ class Eye:
     ):
         assert num_lines % 2 == 0, "Number of lines must be even"
         self.lines = self._create_lines(width, height, center_x, center_y, rotation_angle, num_lines)
+
+    class State:
+        pass
 
     def _create_lines(self, width, height, center_x, center_y, rotation_angle, num_lines):
         steps = num_lines
@@ -63,10 +67,20 @@ class Eye:
         
         return lines
 
-    def draw(self, canvas: tk.Canvas):
-        for x1, y1, x2, y2 in self.lines:
-            canvas.create_line(x1, y1, x2, y2, fill='red')
+    def draw(self, state: State, canvas: tk.Canvas):
+        from eye_states import Blinking
+        if isinstance(state, Blinking):
+            num_lines = len(self.lines)
+            num_invisible_lines = int(state.value / 100 * num_lines)
+            visible_lines_indices = range(num_invisible_lines // 2, num_lines - num_invisible_lines // 2)
 
+            for i, line in enumerate(self.lines):
+                if i in visible_lines_indices:
+                    x1, y1, x2, y2 = line
+                    canvas.create_line(x1, y1, x2, y2, fill='blue')
+
+blinking_value = 0
+blinking_inverted = False
 
 class Eyes:
 
@@ -98,11 +112,35 @@ class Eyes:
             rotation_angle=180 - rotation_angle,
             num_lines=eye_num_lines
         )
+        self.canvas = None
 
-    def draw(self, canvas: tk.Canvas):
-        self.eye1.draw(canvas)
-        self.eye2.draw(canvas)
-    
+    def run(self, canvas: tk.Canvas):
+        self.canvas = canvas
+        self.blink()
+
+    def blink(self):
+        from eye_states import Blinking
+        global blinking_value
+        global blinking_inverted
+        canvas.delete('all')
+        state = Blinking(value=blinking_value)
+        self.eye1.draw(state, canvas)
+        self.eye2.draw(state, canvas)
+
+        if blinking_value == 100:
+            blinking_inverted = True
+        elif blinking_value == 0:
+            blinking_inverted = False
+
+        if not blinking_inverted:
+            blinking_value += 10
+            canvas.after(50, self.blink)
+        else:
+            blinking_value -= 10
+            canvas.after(50, self.blink)
+
+
+
 
 if __name__ == '__main__':
     root = tk.Tk()
@@ -120,6 +158,6 @@ if __name__ == '__main__':
         eye_height=124,
         eye_num_lines=100
     )
-    eyes.draw(canvas)
+    eyes.run(canvas)
     
     root.mainloop()
