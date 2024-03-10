@@ -1,4 +1,8 @@
-from main import Eye
+from app import Eye
+
+class Default(Eye.State):
+    pass
+
 
 class Blinking(Eye.State):
     def __init__(self, value: int):
