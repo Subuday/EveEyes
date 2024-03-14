@@ -1,5 +1,5 @@
 import math
-import tkinter as tk
+from eyes_canvas import EyesCanvas
 
 
 class Eye:
@@ -66,11 +66,11 @@ class Eye:
         
         return lines
     
-    def _draw_default_state(self, canvas: tk.Canvas):
+    def _draw_default_state(self, canvas: EyesCanvas):
         for x1, y1, x2, y2 in self.lines:
             canvas.create_line(x1, y1, x2, y2, fill=self.line_color)
 
-    def _draw_blinking_state(self, canvas: tk.Canvas, percentage: int):
+    def _draw_blinking_state(self, canvas: EyesCanvas, percentage: int):
         num_lines = len(self.lines)
         num_invisible_lines = int(percentage / 100 * num_lines)
         visible_lines_indices = range(num_invisible_lines // 2, num_lines - num_invisible_lines // 2)
@@ -80,7 +80,7 @@ class Eye:
                 x1, y1, x2, y2 = line
                 canvas.create_line(x1, y1, x2, y2, fill=self.line_color)
 
-    def draw(self, state: State, canvas: tk.Canvas):
+    def draw(self, state: State, canvas: EyesCanvas):
         from eye_states import Default, Blinking
 
         if isinstance(state, Default):

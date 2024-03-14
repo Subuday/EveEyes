@@ -1,5 +1,5 @@
 from eye import Eye
-import tkinter as tk
+from eyes_canvas import EyesCanvas
 
 
 class Eyes:
@@ -32,7 +32,7 @@ class Eyes:
             num_lines=eye_num_lines
         )
 
-    def draw(self, state: Eye.State, canvas: tk.Canvas):
+    def draw(self, state: Eye.State, canvas: EyesCanvas):
         canvas.delete('all')
         self.eye1.draw(state, canvas)
         self.eye2.draw(state, canvas)
