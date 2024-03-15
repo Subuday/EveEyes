@@ -12,10 +12,12 @@ class EveApp:
         self.recorder = recorder
         self.canvas = canvas
         self.eyes = Eyes(
-            spacing=92,
+            margin_start=43,
+            margin_top=89,
+            spacing=46,
             rotation_angle=-16,
-            eye_width=188,
-            eye_height=124,
+            eye_width=94,
+            eye_height=62,
             eye_num_lines=100
         )
 

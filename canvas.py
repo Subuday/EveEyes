@@ -31,7 +31,8 @@ if sys.platform == "darwin":
 
         def _draw(self):
             tk_image = ImageTk.PhotoImage(self.image)
-            self.canvas.create_image(0, 0, image=tk_image)
+            self.canvas.create_image(0, 0, anchor='nw', image=tk_image)
+            self.image.save('out.jpg', format='JPEG')
 else:
     class SpiCanvas(Canvas):
         def _draw(self):

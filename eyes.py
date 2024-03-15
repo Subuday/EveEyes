@@ -5,14 +5,16 @@ from canvas import Canvas
 class Eyes:
     def __init__(
         self,
+        margin_start: int,
+        margin_top: int,
         spacing: int,
         rotation_angle: int,
         eye_width: int,
         eye_height: int,
         eye_num_lines: int
     ):
-        eye_center_y = 172
-        eye1_center_x = 194
+        eye_center_y = margin_top
+        eye1_center_x = margin_start + eye_width / 2
         self.eye1 = Eye(
             width=eye_width,
             height=eye_height,
