@@ -44,12 +44,12 @@ else:
             self.pcm = alsaaudio.PCM(
                 alsaaudio.PCM_CAPTURE,
                 alsaaudio.PCM_NORMAL, 
-                cardindex=1,
                 channels=2, 
                 rate=44100, 
                 format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=160,
-                periods=4
+                periodsize=256,
+                periods=4,
+                device="default"
             )
             threading.Thread(target=self._loop).start()
             time.sleep(10)
