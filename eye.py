@@ -1,5 +1,5 @@
 import math
-from eyes_canvas import EyesCanvas
+from canvas import Canvas
 
 
 class Eye:
@@ -66,11 +66,11 @@ class Eye:
         
         return lines
     
-    def _draw_default_state(self, canvas: EyesCanvas):
+    def _draw_default_state(self, canvas: Canvas):
         for x1, y1, x2, y2 in self.lines:
-            canvas.create_line(x1, y1, x2, y2, fill=self.line_color)
+            canvas.draw_line(x1, y1, x2, y2, fill=self.line_color)
 
-    def _draw_blinking_state(self, canvas: EyesCanvas, percentage: int):
+    def _draw_blinking_state(self, canvas: Canvas, percentage: int):
         num_lines = len(self.lines)
         num_invisible_lines = int(percentage / 100 * num_lines)
         visible_lines_indices = range(num_invisible_lines // 2, num_lines - num_invisible_lines // 2)
@@ -78,9 +78,9 @@ class Eye:
         for i, line in enumerate(self.lines):
             if i in visible_lines_indices:
                 x1, y1, x2, y2 = line
-                canvas.create_line(x1, y1, x2, y2, fill=self.line_color)
+                canvas.draw_line(x1, y1, x2, y2, fill=self.line_color)
 
-    def draw(self, state: State, canvas: EyesCanvas):
+    def draw(self, state: State, canvas: Canvas):
         from eye_states import Default, Blinking
 
         if isinstance(state, Default):

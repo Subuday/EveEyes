@@ -1,5 +1,5 @@
 from eye import Eye
-from eyes_canvas import EyesCanvas
+from canvas import Canvas
 
 
 class Eyes:
@@ -32,7 +32,6 @@ class Eyes:
             num_lines=eye_num_lines
         )
 
-    def draw(self, state: Eye.State, canvas: EyesCanvas):
-        canvas.delete('all')
+    def draw(self, state: Eye.State, canvas: Canvas):
         self.eye1.draw(state, canvas)
         self.eye2.draw(state, canvas)
