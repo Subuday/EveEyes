@@ -5,8 +5,11 @@ from eyes_canvas import EyesCanvas, DumbEyesCanvas
 import threading
 import sys
 
+from recorder import AlsaRecorder, Recorder
+
 class EveApp:
-    def __init__(self, canvas: EyesCanvas):
+    def __init__(self, recorder: Recorder, canvas: EyesCanvas):
+        self.recorder = recorder
         self.canvas = canvas
         self.eyes = Eyes(
             spacing=92,
@@ -28,12 +31,20 @@ class EveApp:
             for i in range(100, 0, -10):
                 self.eyes.draw(Blinking(i), self.canvas)
                 sleep(0.005)
+    
+    def _run_recording(self):
+        self.recorder.start()
 
     def run(self):
-        pass
+        self._run_recording()
 
 
 if __name__ == '__main__':
+    if sys.platform == "darwin":
+        recorder = MacOsRecorder()
+    else:
+        recorder = AlsaRecorder()
+
     if sys.platform == "darwin": 
         import tkinter as tk
         root = tk.Tk()
@@ -43,11 +54,14 @@ if __name__ == '__main__':
 
         canvas = tk.Canvas(root, width=680, height=340, bg='black')
         canvas.pack()
-
     canvas = DumbEyesCanvas()
-    app = EveApp(canvas)
+    
+    app = EveApp(recorder, canvas)
 
-    threading.Thread(target=app.run).start()
+    thread = threading.Thread(target=app.run).start()
     
     if sys.platform == "darwin": 
         root.mainloop()
+    else:
+        while True:
+            pass
