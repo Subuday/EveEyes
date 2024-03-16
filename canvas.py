@@ -26,13 +26,13 @@ if sys.platform == "darwin":
     class TkinterCanvas(Canvas):
         def __init__(self, root, width, height):
             super().__init__(width, height)
-            self.canvas = tk.Canvas(root, width=width, height=height, bg='black')
+            self.canvas = tk.Canvas(root, width=width, height=height)
             self.canvas.pack()
+            self.tk_image = None
 
         def _draw(self):
-            tk_image = ImageTk.PhotoImage(self.image)
-            self.canvas.create_image(0, 0, anchor='nw', image=tk_image)
-            self.image.save('out.jpg', format='JPEG')
+            self.tk_image = ImageTk.PhotoImage(self.image)
+            self.canvas.create_image(0, 0, anchor='nw', image=self.tk_image)
 else:
     from LCD_2inch4 import LCD_2inch4
 
