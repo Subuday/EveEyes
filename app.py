@@ -32,13 +32,15 @@ class EveApp:
                 self.canvas._clear()
                 self.eyes.draw(Blinking(i), self.canvas)
                 self.canvas._draw()
-                sleep(0.005)
+                if sys.platform == "darwin":
+                    sleep(1)
 
             for i in range(100, 0, -10):
                 self.canvas._clear()
                 self.eyes.draw(Blinking(i), self.canvas)
                 self.canvas._draw()
-                sleep(0.005)
+                if sys.platform == "darwin":
+                    sleep(1)
     
     def _run_recording(self):
         self.recorder.start()        
@@ -66,7 +68,8 @@ if __name__ == '__main__':
         from canvas import TkinterCanvas
         canvas = TkinterCanvas(root, 320, 240)
     else:
-        canvas = SpiCanvas()
+        from canvas import SpiCanvas
+        canvas = SpiCanvas(320, 240)
     
     app = EveApp(recorder, canvas)
 

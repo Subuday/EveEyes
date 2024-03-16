@@ -34,6 +34,16 @@ if sys.platform == "darwin":
             self.canvas.create_image(0, 0, anchor='nw', image=tk_image)
             self.image.save('out.jpg', format='JPEG')
 else:
+    from LCD_2inch4 import LCD_2inch4
+
     class SpiCanvas(Canvas):
+        def __init__(self, width, height):
+            super().__init__(width, height)
+            self.canvas = LCD_2inch4()
+            self.canvas.Init()
+            self.canvas.clear()
+            self.canvas.bl_DutyCycle(50)
+
         def _draw(self):
-            pass
+            image = self.image.rotate(90, expand=True)
+            self.canvas.ShowImage(image)
