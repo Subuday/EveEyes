@@ -4,8 +4,9 @@ from eyes import Eyes
 from canvas import Canvas
 import threading
 import sys
-
+from network_client import NetworkClient
 from recorder import Recorder
+import asyncio
 
 class EveApp:
     def __init__(self, recorder: Recorder, canvas: Canvas):
@@ -20,6 +21,7 @@ class EveApp:
             eye_height=62,
             eye_num_lines=100
         )
+        self.network_client = NetworkClient()
 
     def _run_rendering(self):
         from eye_states import Default, Blinking
@@ -43,7 +45,10 @@ class EveApp:
                     sleep(1)
     
     def _run_recording(self):
-        self.recorder.start()        
+        self.recorder.start()    
+
+    async def _run_connection(self):
+        await self.network_client.run()
 
     def run(self):
         self._run_rendering()
@@ -74,6 +79,7 @@ if __name__ == '__main__':
     app = EveApp(recorder, canvas)
 
     thread = threading.Thread(target=app.run).start()
+    asyncio.run(app._run_connection())
     
     if sys.platform == "darwin": 
         root.mainloop()
