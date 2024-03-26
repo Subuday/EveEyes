@@ -1,4 +1,4 @@
-from app import Eye
+from eye import Eye
 
 class Default(Eye.State):
     pass
