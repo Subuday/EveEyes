@@ -17,37 +17,22 @@ else:
     import alsaaudio
 
     class AlsaRecorder(Recorder):
-        def __init__(self):
+        def __init__(self, queue: asyncio.Queue):
             self.pcm = alsaaudio.PCM(
                 alsaaudio.PCM_CAPTURE,
                 alsaaudio.PCM_NORMAL, 
                 channels=2, 
                 rate=44100, 
                 format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=256,
-                periods=4,
-                device="default"
+                periodsize=2048,
+                device="plughw:1,0"
             )
-            self.f = wave.open("test.wav", 'wb')
-            self.f.setnchannels(2)
-            self.f.setsampwidth(2)    #PCM_FORMAT_S16_LE
-            self.f.setframerate(44100)
+            self.queue = queue
 
         async def run(self):
-            try:
-                count = 0
-                while True:
-                    num_frames, data = self.pcm.read()
-                    if num_frames:
-                        count += len(data)
-                        print(f"Read frames {num_frames} and {len(data)} bytes.")
-                        self.f.writeframes(data)
-                        await asyncio.sleep(.001)
-            except Exception:
-                pass
-            await asyncio.sleep(10)
-            self.stop()
-            
-        def stop(self):
-            self.pcm.close()
-            self.f.close()
+            while True:
+                num_frames, data = self.pcm.read()
+                if num_frames:
+                    print(f"Read frames {num_frames} and {len(data)} bytes.")
+                    await self.queue.put(data)
+                    await asyncio.sleep(0.001)
