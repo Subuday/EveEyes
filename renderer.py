@@ -1,8 +1,8 @@
-import asyncio
 import sys
-from canvas import Canvas
+from canvas import Canvas, SpiCanvas
 from eye import Eye
 from eyes import Eyes
+from time import sleep
 
 class Renderer:
     def __init__(self, canvas: Canvas):
@@ -17,27 +17,31 @@ class Renderer:
             eye_num_lines=100
         )
 
-    async def run(self):
+    def run(self):
         from eye_states import Default, Blinking
         while True:
             self.canvas._clear()
             self.eyes.draw(Default(), self.canvas)
             self.canvas._draw()
-            await asyncio.sleep(3)
+            sleep(3)
             for i in range(0, 100, 10):
                 self.canvas._clear()
                 self.eyes.draw(Blinking(i), self.canvas)
                 self.canvas._draw()
                 if sys.platform == "darwin":
-                    await asyncio.sleep(1)
-                else:
-                    await asyncio.sleep(0.001)
+                    sleep(1)
 
             for i in range(100, 0, -10):
                 self.canvas._clear()
                 self.eyes.draw(Blinking(i), self.canvas)
                 self.canvas._draw()
                 if sys.platform == "darwin":
-                    await asyncio.sleep(1)
-                else:
-                    await asyncio.sleep(0.001)
+                    sleep(1)
+
+
+def renderer_main():
+    canvas = SpiCanvas(320, 240)
+    renderer = Renderer(canvas)
+    renderer.run()
+
+

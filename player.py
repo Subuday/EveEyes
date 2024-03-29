@@ -1,40 +1,42 @@
 from abc import ABC, abstractmethod
-import asyncio
+from multiprocessing import Queue
 import alsaaudio
 import sys
 import wave
 
 class Player(ABC):
     @abstractmethod
-    async def run(self):
+    def run(self):
         pass
 
 if sys.platform == "darwin":
     class MacOsPlayer(Player):
-        async def run(self):
+        def run(self):
             pass
 else:
     import alsaaudio
 
     class AlsaPlayer(Player):
-        def __init__(self, queue: asyncio.Queue):
+        def __init__(self, queue: Queue):
             self.pcm = alsaaudio.PCM(
                 alsaaudio.PCM_PLAYBACK,
                 alsaaudio.PCM_NORMAL, 
                 channels=2, 
                 rate=44100, 
                 format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=8129,
+                periodsize=8192,
                 device="plughw:1,0"
             )
             self.queue = queue
 
-        async def run(self):
+        def run(self):
             while True:
-                data = await self.queue.get()
+                data = self.queue.get()
                 print(f"Write {len(data)} bytes.")
-                try:
-                    self.pcm.write(data)
-                except:
-                    print("Caught error during playing audio")
-                await asyncio.sleep(0)
+                self.pcm.write(data)
+
+
+
+def player_main(queue: Queue):
+    player = AlsaPlayer(queue)
+    player.run()
