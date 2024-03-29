@@ -39,7 +39,7 @@ else:
     class SpiCanvas(Canvas):
         def __init__(self, width, height):
             super().__init__(width, height)
-            self.canvas = LCD_2inch4()
+            self.canvas = LCD_2inch4(bl=12)
             self.canvas.Init()
             self.canvas.clear()
             self.canvas.bl_DutyCycle(50)
