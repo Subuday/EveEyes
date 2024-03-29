@@ -24,7 +24,7 @@ else:
                 channels=2, 
                 rate=44100, 
                 format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=2048,
+                periodsize=8129,
                 device="plughw:1,0"
             )
             self.queue = queue
@@ -33,5 +33,8 @@ else:
             while True:
                 data = await self.queue.get()
                 print(f"Write {len(data)} bytes.")
-                self.pcm.write(data)
-                await asyncio.sleep(0.001)
+                try:
+                    self.pcm.write(data)
+                except:
+                    print("Caught error during playing audio")
+                await asyncio.sleep(0)

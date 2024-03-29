@@ -30,6 +30,8 @@ class Renderer:
                 self.canvas._draw()
                 if sys.platform == "darwin":
                     await asyncio.sleep(1)
+                else:
+                    await asyncio.sleep(0.001)
 
             for i in range(100, 0, -10):
                 self.canvas._clear()
@@ -37,3 +39,5 @@ class Renderer:
                 self.canvas._draw()
                 if sys.platform == "darwin":
                     await asyncio.sleep(1)
+                else:
+                    await asyncio.sleep(0.001)

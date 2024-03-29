@@ -24,7 +24,7 @@ else:
                 channels=2, 
                 rate=44100, 
                 format=alsaaudio.PCM_FORMAT_S16_LE,
-                periodsize=2048,
+                periodsize=8129,
                 device="plughw:1,0"
             )
             self.queue = queue
@@ -35,4 +35,4 @@ else:
                 if num_frames:
                     print(f"Read frames {num_frames} and {len(data)} bytes.")
                     await self.queue.put(data)
-                    await asyncio.sleep(0.001)
+                    await asyncio.sleep(0)
