@@ -1,35 +1,28 @@
 import wave
 from canvas import Canvas
 import sys
-from network_client import NetworkClient
-from recorder import recorder_main
-import asyncio
+from network_client import network_client_main
 from renderer import renderer_main
-from player import player_main
-import alsaaudio
-import multiprocessing
-from multiprocessing import Process
+from media_manager import media_manager_main
+import asyncio
+from multiprocessing import Process, Queue
 
 class EveApp:
     def __init__(self):
         self.renderer_process = Process(target=renderer_main)
-        self.audioQueue = multiprocessing.Queue()
-        self.player_process = Process(target=player_main, args=(self.audioQueue,))
-        self.recorder_process = Process(target=recorder_main, args=(self.audioQueue,))
-        outputQueue = asyncio.Queue()
-        # self.player = EveApp._create_player(outputQueue)
-        self.network_client = NetworkClient(None, outputQueue)
+        output_queue = Queue()
+        input_queue = Queue()
+        self.media_manager_process = Process(target=media_manager_main, args=(output_queue,))
+        self.network_client_process = Process(target=network_client_main, args=(input_queue, output_queue))
 
     async def run(self):
-        self.player_process.start()
-        self.recorder_process.start()
+        self.media_manager_process.start()
         self.renderer_process.start()
-        # await asyncio.gather(
-        #     asyncio.create_task(self.network_client.run()),
-        # )
-        self.player_process.join()
-        self.recorder_process.join()
+        self.network_client_process.start()
+
+        self.media_manager_process.join()
         self.renderer_process.join()
+        self.network_client_process.join()
 
 
 async def main():
